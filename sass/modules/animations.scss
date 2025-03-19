@@ -1,0 +1,54 @@
+.falling-character {
+	display: inline-block;
+	font-size: 2rem;
+	font-weight: bold;
+	opacity: 0;
+	transform: translateY(-30px);
+	animation: fallDown 0.2s ease-out forwards;
+}
+@keyframes fallDown {
+	from {
+		opacity: 0;
+		transform: translateY(-3rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.rising-character {
+	display: inline-block;
+	opacity: 1;
+	transform: translateY(0);
+	animation: riseUp 0.15s ease-in forwards;
+}
+@keyframes riseUp {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	50% {
+		opacity: 0;
+		transform: translateY(3rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.from-right-char {
+	animation: myAnim 1s ease-in-out 0s 1 normal forwards;
+}
+@keyframes myAnim {
+	0% {
+		opacity: 0;
+		transform: translateX(250px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}

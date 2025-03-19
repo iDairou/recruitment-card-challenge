@@ -3,51 +3,42 @@ include defaults/mixins.pug
 
 block content
   .container
-    section.card__preview
-      .card__preview--chip
-        +addPicture('chip.png', 'card__preview--chip-img')
-      .card__preview--logo
-        +addPicture('visa.png', 'card__preview--visa-img')
-      .card__preview--number
-        each blockNum in [1, 2, 3, 4]
-          .card__preview--number--block
+    .card__wrapper
+      section.card__preview
+        .card__preview--chip
+          +addPicture('chip.png', 'card__preview--chip-img')
+        .card__preview--logo
+          +addPicture('visa.png', 'card__preview--visa-img')
+        .card__preview--number
+          each blockNum in [1, 2, 3, 4]
+            .card__preview--number--block
               each digit in [1, 2, 3, 4]
                 span.card__digit #
-      .card__preview--holder
-        span Card Holder
-        strong.card__previev--holder--name AD SOYAD
-      .card__preview--expires
-        span Expires
-        .card__preview--expires--box
-          strong.card__previev--expires--box--month MM
-          strong.card__previev--expires--box--month /
-          strong.card__previev--expires--box--year YY
-    section.card__preview--backside
-      .card__preview--chip
-        +addPicture('chip.png', 'card__preview--chip-img')
-      .card__preview--logo
-        +addPicture('visa.png', 'card__preview--visa-img')
-      .card__preview--number
-        each blockNum in [1, 2, 3, 4]
-          .card__preview--number--block
-              each digit in [1, 2, 3, 4]
-                span.card__digit #
-      .card__preview--holder
-        span Card Holder
-        strong.card__previev--holder--name AD SOYAD
-      .card__preview--expires
-        span Expires
-        .card__preview--expires--box
-          strong.card__previev--expires--box--month MM
-          strong.card__previev--expires--box--month /
-          strong.card__previev--expires--box--year YY
+        .card__preview--holder
+          span Card Holder
+          strong.card__previev--holder--name AD SOYAD
+        .card__preview--expires
+          span Expires
+          .card__preview--expires--box
+            strong.card__previev--expires--box--month MM
+            strong.card__previev--expires--box--month /
+            strong.card__previev--expires--box--year YY
+
+      section.card__preview--backside
+        .card__preview--backside--stripe
+        .card__preview--backside--cvv-container
+          label.card__preview--cvv-label CVV
+          .white-stripe
+            span.card__preview--cvv-box 3231
+        .card__preview--backside--logo
+          +addPicture('visa.png', 'card__preview--visa-img')
 
     form.card__form(action="#")
       label(for="card-number") Card Number
       input.card__form--input#card-number(type="number" maxlength="16")
 
       label(for="card-name") Card Name
-      input.card__form--input#card-name(type="text" )
+      input.card__form--input#card-name(type="text")
 
       .card__form--row
         .card__form--column

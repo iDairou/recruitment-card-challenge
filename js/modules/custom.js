@@ -26,11 +26,18 @@ export default function () {
 
 	// CVV
 	const formCvvInput = document.querySelector("#cvv");
+	const cardCvvField = document.querySelector(".card__preview--cvv-box");
 
 	// FRONT CARD
 	const frontCard = document.querySelector(".card__preview");
 	// BACK CARD
 	const backCard = document.querySelector(".card__preview--backside");
+
+	const handleCvvChange = (e) => {
+		const input = e.target;
+
+		cardCvvField.textContent = input.value;
+	};
 
 	const logoPatterns = {
 		visa: /^4/,
@@ -143,15 +150,23 @@ export default function () {
 		}, 10);
 	};
 
-	// const updateCardCvv = (e) => {
-	// 	frontCard.style.display = "none";
-	// 	backCard.style.display = "block";
-	// };
+    const cardWrapper = document.querySelector(".card__wrapper");
+    const cvvInput = document.getElementById("cvv");
+
+    cvvInput.addEventListener("focus", () => {
+        cardWrapper.classList.add("flipped");
+    });
+
+    cvvInput.addEventListener("blur", () => {
+        cardWrapper.classList.remove("flipped");
+    });
 
 	// Nasłuchiwanie na zmianę wartości w polach formularza
 	formMonthInput.addEventListener("change", updateCardMonth);
 	formYearInput.addEventListener("change", updateCardYear);
 	formNumberInput.addEventListener("input", updateCardNumber);
 	formHolderInput.addEventListener("input", updateCardName);
-	formCvvInput.addEventListener("focus", updateCardCvv);
+	// formCvvInput.addEventListener("focus", displayBackCard);
+	// formCvvInput.addEventListener("blur", displayFrontCard);
+	formCvvInput.addEventListener("input", handleCvvChange);
 }
