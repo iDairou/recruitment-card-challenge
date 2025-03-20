@@ -15,10 +15,10 @@ block content
               each digit in [1, 2, 3, 4]
                 span.card__digit #
         .card__preview--holder
-          span Card Holder
-          strong.card__previev--holder--name AD SOYAD
+          label Card Holder
+          .card__preview--holder--char AD SOYAD
         .card__preview--expires
-          span Expires
+          label Expires
           .card__preview--expires--box
             strong.card__previev--expires--box--month MM
             strong.card__previev--expires--box--month /
@@ -30,7 +30,7 @@ block content
           label.card__preview--cvv-label CVV
           .white-stripe
             span.card__preview--cvv-box 3231
-        .card__preview--backside--logo
+        .card__preview--logo.back-logo
           +addPicture('visa.png', 'card__preview--visa-img')
 
     form.card__form(action="#")

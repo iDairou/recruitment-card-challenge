@@ -1,6 +1,6 @@
-@import 'animations.scss';
-@import 'backCard.scss';
-@import 'flipping.scss';
+@import "animations.scss";
+@import "backCard.scss";
+@import "flipping.scss";
 
 html {
 	font-size: 62.5%;
@@ -23,27 +23,32 @@ body {
 	justify-content: center;
 }
 
-.card__preview {
+.card__wrapper {
+	perspective: 1000px;
+	width: 100%;
+	max-width: 45rem;
+	height: 25rem;
+	position: absolute;
+	top: 10%;
+	z-index: 2;
+}
 
+.card__preview {
 	position: relative;
 	background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
 		url("/images/background.jpg");
 	background-size: cover;
 	border-radius: 2rem;
 	color: white;
-	max-width: 58rem;
-	min-height: 29rem;
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	grid-template-rows: repeat(3, 1fr);
 	text-align: center;
-	padding: 2rem 1rem;
-	box-shadow: 8px 9px 100px -10px rgba(66, 68, 90, 1);
-	z-index: 1;
-	position: absolute;
-	top: 5%;
+	padding: 2rem 0;
 	letter-spacing: 2px;
-
+	width: 100%;
+	height: 100%;
+	box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
 	&--chip {
 		grid-area: 1 / 1 / 2 / 2;
 		img {
@@ -56,7 +61,7 @@ body {
 		grid-area: 1 / 4 / 2 / 5;
 		img {
 			min-width: 40%;
-			max-width: 60%;
+			max-width: 70%;
 		}
 	}
 
@@ -68,14 +73,14 @@ body {
 		align-items: center;
 		height: fit-content;
 		align-self: center;
+		margin: 0 2rem;
 		&--block {
 			text-align: center;
-			letter-spacing: 0.5rem;
+			letter-spacing: 0.3rem;
 			flex: 1;
-			margin: 2rem;
+			margin: 1rem;
 		}
 	}
-
 	&--holder,
 	&--expires {
 		display: flex;
@@ -83,13 +88,13 @@ body {
 		gap: 0.5rem;
 		justify-content: flex-end;
 		margin-bottom: 1rem;
+		&--box {
+			font-size: 2rem;
+		}
 
-		span {
+		label {
 			font-size: 1.2rem;
 			color: #ccc;
-		}
-		strong {
-			font-size: 1.6rem;
 		}
 	}
 
@@ -97,9 +102,14 @@ body {
 		grid-area: 3 / 1 / 4 / 4;
 		text-align: left;
 		margin-left: 1rem;
+		&--char {
+			font-size: 2rem;
+			font-weight: bold;
+			
+		}
 	}
 	&--expires {
-		grid-area: 3 / 3 / 4 / 5;
+		grid-area: 3 / 4 / 4 / 5;
 		text-align: right;
 		margin-right: 1rem;
 	}
@@ -108,16 +118,15 @@ body {
 form.card__form {
 	display: flex;
 	flex-direction: column;
-	padding: 5rem 2rem;
+	padding: 20rem 3rem 3rem;
 	width: 90%;
-	max-width: 70rem;
-	max-height: 60rem;
+	max-width: 50rem;
 	background-color: white;
 	border-radius: 15px;
 	box-shadow: 0px 0px 58px -12px rgba(66, 68, 90, 1);
 	position: relative;
 	z-index: 0;
-	padding-top: 25rem;
+	margin-top: 18rem;
 
 	label {
 		font-size: 1.4rem;
@@ -163,7 +172,7 @@ form.card__form {
 		font-size: 1.8rem;
 		border-radius: 5px;
 		cursor: pointer;
-		transition: background 0.3s;
+		transition: all 0.3s;
 
 		&:hover {
 			background-color: #0056b3;
@@ -171,37 +180,107 @@ form.card__form {
 	}
 }
 
-
 @media (max-width: 768px) {
-	.card__preview {
-		width: 95%;
-		max-width: 350px;
-	}
 
 	form.card__form {
-		width: 95%;
-		max-width: 350px;
 	}
-
-	.card__form--row {
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.card__form--column--select-container {
-		flex-direction: column;
+	.card__preview--number--block {
+		margin: 1rem;
 	}
 }
 
+@media (max-width: 576px) {
+	html {
+		font-size: 58%;
+	}
+
+}
+
 @media (max-width: 480px) {
+	.card__wrapper {
+		height: 18rem;
+        max-width: 38rem;
+        top: 18%;
+	}
+
 	.card__preview {
-		width: 100%;
-		max-width: 320px;
+		&--number {
+			font-size: 2rem;
+			&--block {
+				margin: 0;
+			}
+
+			&--block {
+				gap: 0.3rem;
+			}
+		}
+
+		&--holder,
+		&--expires {
+			label {
+				font-size: 1rem;
+			}
+		}
+		&--holder {
+			&--char {
+				font-size: 1.6rem;
+			}
+		}
 	}
 
 	form.card__form {
-		width: 100%;
-		max-width: 320px;
-		padding: 1.5rem;
+		width: 90%;
+		padding: 2.5rem 1.5rem 1.5rem;
+
+		input,
+		select {
+			padding: 1.2rem;
+			font-size: 1.4rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.card__form--column--select-container {
+			flex-direction: row;
+		}
+
+		button.card__form--submit {
+			padding: 1.2rem;
+			font-size: 1.4rem;
+		}
+	}
+}
+
+@media (max-width: 395px) {
+	.card__wrapper {
+		height: 18rem;
+        max-width: 37rem;
+        top: 10%;
+	}
+
+	.card__preview {
+		&--chip img,
+		&--logo img {
+			width: 5rem;
+		}
+
+		&--number {
+			font-size: 1.2rem;
+		}
+
+		&--holder {
+			&--char {
+				font-size: 1.2rem;
+			}
+		}
+
+		&--expires {
+			&--box {
+				font-size: 1.2rem;
+			}
+		}
+	}
+	form.card__form .card__form--row{
+		flex-direction: column;
+		gap: 0;
 	}
 }
