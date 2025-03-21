@@ -1,7 +1,5 @@
 .fade-in {
     display: inline-block;
-    font-size: 2rem;
-    font-weight: bold;
     opacity: 0;
     transform: translateY(-30px);
     animation: fallDown 0.2s ease-out forwards;

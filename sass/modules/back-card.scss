@@ -61,11 +61,10 @@
 }
 
 @media (max-width: 480px) {
-	.cardpreview--backside--stripe {
+	.card__preview--backside--stripe {
 		height: 4rem;
 	}
-
-	.white-stripe {
-		height: 3rem;
+	.card__preview--backside--cvv-container .white-stripe {
+		height: 4rem;
 	}
 }
