@@ -1,45 +1,35 @@
 export default function () {
-	const htmlElements = {
-		inputFields: document.querySelectorAll(".card__form--input"),
-		formNumberInput: document.querySelector("#card-number"),
-		formHolderInput: document.querySelector("#card-name"),
-		formCvvInput: document.querySelector("#cvv"),
-		formMonthInput: document.querySelector("#expiration-month"),
-		formYearInput: document.querySelector("#expiration-year"),
-		cardHolderValue: document.querySelector(".card__preview--holder--char"),
-		cardMonthValue: document.querySelector(
-			".card__previev--expires--box--month"
-		),
-		cardYearValue: document.querySelector(".card__previev--expires--box--year"),
-		cardLogoImage: document.querySelectorAll(".card__preview--logo img"),
-		cardCvvField: document.querySelector(".card__preview--cvv-box"),
-		cardWrapper: document.querySelector(".card__wrapper"),
-		digitSpans: document.querySelectorAll(".card__digit"),
+	const elements = {
+		form: {
+			number: document.querySelector("#card-number"),
+			holder: document.querySelector("#card-name"),
+			cvv: document.querySelector("#cvv"),
+			month: document.querySelector("#expiration-month"),
+			year: document.querySelector("#expiration-year"),
+			inputs: document.querySelectorAll(".card__form--input"),
+		},
+		card: {
+			wrapper: document.querySelector(".card__wrapper"),
+			digits: document.querySelectorAll(".card__digit"),
+			holder: document.querySelector(".card__preview--holder--char"),
+			month: document.querySelector(".card__previev--expires--box--month"),
+			year: document.querySelector(".card__previev--expires--box--year"),
+			cvv: document.querySelector(".card__preview--cvv-box"),
+			logos: document.querySelectorAll(".card__preview--logo img"),
+			sections: {
+				number: document.querySelector(".card__preview--number"),
+				holder: document.querySelector(".card__preview--holder"),
+				expiry: document.querySelector(".card__preview--expires"),
+			},
+		},
 	};
-
-	const setupCardSections = () => {
-		const sections = {
-			numberSection: document.querySelector(".card__preview--number"),
-			holderSection: document.querySelector(".card__preview--holder"),
-			expirySection: document.querySelector(".card__preview--expires"),
-			cvvSection: document.querySelector(".card__preview--backside--cvv-container")
-		};
-		
-		Object.values(sections).forEach(section => {
-			if (section) {
-				section.classList.add('card__section');
-			}
-		});
-		
-		return sections;
-	};
-	
-	const cardSections = setupCardSections();
 
 	const logoPatterns = {
 		visa: /^4/,
 		mastercard: /^5[1-5]|^2[2-7]/,
 	};
+
+	let currentCardType = "visa";
 
 	const identifyLogoImage = (number) => {
 		const { visa, mastercard } = logoPatterns;
@@ -48,226 +38,183 @@ export default function () {
 		} else if (mastercard.test(number)) {
 			return "mastercard";
 		} else {
-			//default?
 			return "visa";
 		}
 	};
 
 	const handleLogoChange = (number) => {
-		const imagesArr = Array.from(htmlElements.cardLogoImage);
-		if (!htmlElements.cardLogoImage) return;
+		const { logos } = elements.card;
+		if (!logos) return;
+
 		const cardLogo = identifyLogoImage(number);
 
-		imagesArr.forEach((image) => {
-			const currentSrc = image.src;
-			if (currentSrc !== `/images/${cardLogo}.png`) {
+		if (cardLogo !== currentCardType) {
+			currentCardType = cardLogo;
 
-				image.classList.remove("falling-character");
+			const imagesArr = Array.from(logos);
+			imagesArr.forEach((image) => {
+				image.classList.remove("fade-in");
 				image.src = `/images/${cardLogo}.png`;
-				void image.offsetWidth; // Wywołaj reflow?
-				image.classList.add("falling-character");
-			}
+				void image.getBoundingClientRect();
+				image.classList.add("fade-in");
+			});
+		}
+	};
+
+	const clearFocus = () => {
+		Object.values(elements.card.sections).forEach((section) => {
+			if (section) section.classList.remove("card__section--focus");
 		});
 	};
 
-	const handleCvvChange = (e) => {
-		const input = e.target;
-		htmlElements.cardCvvField.textContent = input.value;
+	const focusSection = (sectionName) => {
+		clearFocus();
+		const section = elements.card.sections[sectionName];
+		if (section) section.classList.add("card__section--focus");
 	};
 
 	const updateCardNumber = (e) => {
-		const input = e.target;
-		const value = input.value.replace(/\D/g, "").slice(0, 16);
-		input.value = value;
+		const value = e.target.value.replace(/\D/g, "").slice(0, 16);
+		e.target.value = value;
+
 		handleLogoChange(value);
-		updateCardPreview(value);
-	};
 
-	const updateCardPreview = (value) => {
-		const digits = value.split("");
-		htmlElements.digitSpans.forEach((span, index) => {
+		elements.card.digits.forEach((span, index) => {
 			const isRising = span.classList.contains("rising-character");
+			span.classList.remove(isRising ? "rising-character" : "fade-in");
 
-			if (!isRising) {
-				span.classList.remove("falling-character");
-			} else {
-				span.classList.remove("rising-character");
-			}
-
-			if (index < digits.length) {
-				span.textContent = digits[index];
-				span.classList.add("falling-character");
+			if (index < value.length) {
+				span.textContent = value[index];
+				span.classList.add("fade-in");
 			} else if (span.textContent !== "#") {
 				span.textContent = "#";
 				span.classList.add("rising-character");
-				span.classList.remove("falling-character");
 			}
 		});
 	};
 
-	const clearCardHolder = () => {
-		while (htmlElements.cardHolderValue.firstChild) {
-			htmlElements.cardHolderValue.removeChild(
-				htmlElements.cardHolderValue.firstChild
-			);
-		}
-	};
-
-	const addCharactersToCard = (text) => {
-		let previousNameLength = 0;
-		const isAdding = text.length > previousNameLength;
-		previousNameLength = text.length;
-
-		for (let i = 0; i < text.length; i++) {
-			const charElement = document.createElement("span");
-			charElement.classList.add("card__preview--holder--char");
-			charElement.textContent = text[i];
-
-			if (isAdding && i === text.length - 1) {
-				charElement.classList.add("slide-from-right");
-			}
-
-			htmlElements.cardHolderValue.appendChild(charElement);
-		}
-	};
-
 	const updateCardName = (e) => {
-		const input = e.target;
+		const { holder } = elements.card;
 		const maxLength = 20;
-		if (input.value.length > maxLength) {
-			input.value = input.value.slice(0, maxLength);
-			return;
-		}
-		const value = input.value
+		let value = e.target.value
 			.toUpperCase()
 			.replace(/[^A-Z\s]/g, "")
 			.replace(/\s{2,}/g, " ");
-		input.value = value;
 
-		clearCardHolder();
+		if (value.length > maxLength) {
+			value = value.slice(0, maxLength);
+		}
+		e.target.value = value;
+
+		while (holder.firstChild) {
+			holder.removeChild(holder.firstChild);
+		}
 
 		if (value.length === 0) {
-			htmlElements.cardHolderValue.textContent = "AD SOYAD";
-			return;
+			holder.textContent = "AD SOYAD";
+		} else {
+			for (let i = 0; i < value.length; i++) {
+				const charElement = document.createElement("span");
+				charElement.classList.add("card__preview--holder--char");
+				charElement.textContent = value[i];
+				if (i === value.length - 1) {
+					charElement.classList.add("slide-from-right");
+				}
+				holder.appendChild(charElement);
+			}
 		}
-		addCharactersToCard(value);
 	};
 
 	const updateCardMonth = (e) => {
-		const currentMonth = new Date().getMonth() + 1;
+		const { month } = elements.card;
+		const { year: yearInput } = elements.form;
+
 		const selectedMonth = parseInt(e.target.value, 10);
-		const selectedYear = parseInt(htmlElements.formYearInput.value, 10);
+		const selectedYear = parseInt(yearInput.value, 10);
+		const currentMonth = new Date().getMonth() + 1;
 		const currentYear = new Date().getFullYear();
 
 		if (!selectedMonth) {
-			htmlElements.cardMonthValue.textContent = "MM";
+			month.textContent = "MM";
 			return;
 		}
+
 		if (selectedYear === currentYear && selectedMonth < currentMonth) {
 			alert("Nie możesz wybrać przeszłego miesiąca w bieżącym roku!");
 			e.target.value = "";
-			htmlElements.cardMonthValue.textContent = "MM";
+			month.textContent = "MM";
 			return;
 		}
-		htmlElements.cardMonthValue.classList.remove("falling-character");
 
-		// Małe opóźnienie, aby usunięcie klasy miało efekt i można było ją dodać ponownie - do przemyślenia (!)
+		month.classList.remove("fade-in");
 		setTimeout(() => {
-			htmlElements.cardMonthValue.textContent = selectedMonth
-				.toString()
-				.padStart(2, "0");
-			htmlElements.cardMonthValue.classList.add("falling-character");
+			month.textContent = selectedMonth.toString().padStart(2, "0");
+			month.classList.add("fade-in");
 		}, 10);
 	};
 
 	const updateCardYear = (e) => {
+		const { year } = elements.card;
 		const selectedYear = parseInt(e.target.value, 10) % 100;
+
 		if (!selectedYear) {
-			htmlElements.cardYearValue.textContent = "YY";
+			year.textContent = "YY";
 			return;
 		}
-		htmlElements.cardYearValue.classList.remove("falling-character");
 
+		year.classList.remove("fade-in");
 		setTimeout(() => {
-			htmlElements.cardYearValue.textContent = selectedYear;
-			htmlElements.cardYearValue.classList.add("falling-character");
+			year.textContent = selectedYear;
+			year.classList.add("fade-in");
 		}, 10);
 	};
-	
-	const clearFocusFromAllSections = () => {
-		Object.values(cardSections).forEach(section => {
-			if (section) {
-				section.classList.remove('card__section--focus');
-			}
-		});
-	};
-	
 
-	const handleInputFocus = (e) => {
-		clearFocusFromAllSections();
-		
-		const inputId = e.target.id;
-		
-		switch(inputId) {
-			case 'card-number':
-				cardSections.numberSection.classList.add('card__section--focus');
-				break;
-			case 'card-name':
-				cardSections.holderSection.classList.add('card__section--focus');
-				break;
-			case 'expiration-month':
-			case 'expiration-year':
-				cardSections.expirySection.classList.add('card__section--focus');
-				break;
-			case 'cvv':
-				cardSections.cvvSection.classList.add('card__section--focus');
-				break;
-		}
+	const updateCardCVV = (e) => {
+		const { cvv } = elements.card;
+		const value = e.target.value.replace(/\D/g, "").slice(0, 3);
+		e.target.value = value;
+		cvv.textContent = value;
 	};
 
-	const addEventListeners = () => {
-		const {
-			formCvvInput,
-			cardWrapper,
-			formMonthInput,
-			formYearInput,
-			formNumberInput,
-			formHolderInput,
-		} = htmlElements;
+	const initEventListeners = () => {
+		const { number, holder, cvv, month, year } = elements.form;
+		const { wrapper } = elements.card;
 
-		formCvvInput.addEventListener("focus", () => {
-			cardWrapper.classList.add("flipped");
-			handleInputFocus({ target: formCvvInput });
+		// Obsługa numeru karty
+		number.addEventListener("input", updateCardNumber);
+		number.addEventListener("focus", () => focusSection("number"));
+
+		// Obsługa imienia i nazwiska
+		holder.addEventListener("input", updateCardName);
+		holder.addEventListener("focus", () => focusSection("holder"));
+
+		// Obsługa daty ważności
+		month.addEventListener("change", updateCardMonth);
+		month.addEventListener("focus", () => focusSection("expiry"));
+		year.addEventListener("change", updateCardYear);
+		year.addEventListener("focus", () => focusSection("expiry"));
+
+		// Obsługa kodu CVV
+		cvv.addEventListener("input", updateCardCVV);
+		cvv.addEventListener("focus", () => {
+			wrapper.classList.add("flipped");
+		});
+		cvv.addEventListener("blur", () => {
+			wrapper.classList.remove("flipped");
+			clearFocus();
 		});
 
-		formCvvInput.addEventListener("blur", () => {
-			cardWrapper.classList.remove("flipped");
-			clearFocusFromAllSections();
-		});
-
-		formMonthInput.addEventListener("change", updateCardMonth);
-		formYearInput.addEventListener("change", updateCardYear);
-		formNumberInput.addEventListener("input", updateCardNumber);
-		formHolderInput.addEventListener("input", updateCardName);
-		formCvvInput.addEventListener("input", handleCvvChange);
-		
-		formNumberInput.addEventListener("focus", handleInputFocus);
-		formHolderInput.addEventListener("focus", handleInputFocus);
-		formMonthInput.addEventListener("focus", handleInputFocus);
-		formYearInput.addEventListener("focus", handleInputFocus);
-		
-		const allInputs = [formNumberInput, formHolderInput, formMonthInput, formYearInput, formCvvInput];
-		allInputs.forEach(input => {
-			input.addEventListener("blur", (e) => {
+		const formInputs = [number, holder, month, year];
+		formInputs.forEach((input) => {
+			input.addEventListener("blur", () => {
 				setTimeout(() => {
-					const activeElement = document.activeElement;
-					if (!allInputs.includes(activeElement)) {
-						clearFocusFromAllSections();
+					if (!formInputs.includes(document.activeElement)) {
+						clearFocus();
 					}
 				}, 50);
 			});
 		});
 	};
-	
-	addEventListeners();
+
+	initEventListeners();
 }

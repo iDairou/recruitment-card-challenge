@@ -9,15 +9,15 @@ block content
           +addPicture('chip.png', 'card__preview--chip-img')
         .card__preview--logo
           +addPicture('visa.png', 'card__preview--visa-img')
-        .card__preview--number
+        .card__preview--number.card__section
           each blockNum in [1, 2, 3, 4]
             .card__preview--number--block
               each digit in [1, 2, 3, 4]
                 span.card__digit #
-        .card__preview--holder
+        .card__preview--holder.card__section
           label Card Holder
           .card__preview--holder--char AD SOYAD
-        .card__preview--expires
+        .card__preview--expires.card__section
           label Expires
           .card__preview--expires--box
             strong.card__previev--expires--box--month MM
@@ -35,10 +35,10 @@ block content
 
     form.card__form(action="#")
       label(for="card-number") Card Number
-      input.card__form--input#card-number(type="number" maxlength="16")
+      input.card__form--input#card-number(type="number")
 
       label(for="card-name") Card Name
-      input.card__form--input#card-name(type="text")
+      input.card__form--input#card-name(type="text" maxlength="20")
 
       .card__form--row
         .card__form--column
@@ -56,6 +56,6 @@ block content
 
         .card__form--column
           label(for="cvv") CVV
-          input.card__form--input#cvv(type="text" placeholder="CVV" maxlength="3")
+          input.card__form--input#cvv(type="number" placeholder="CVV" min="1" max="999")
 
       button.card__form--submit(type="submit") Submit
