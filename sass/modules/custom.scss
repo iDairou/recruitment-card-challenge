@@ -1,6 +1,7 @@
 @import "animations.scss";
 @import "back-card.scss";
 @import "flipping.scss";
+@import "mixins.scss";
 
 html {
 	font-size: 62.5%;
@@ -15,12 +16,10 @@ body {
 .container {
 	width: 100%;
 	min-height: 100vh;
-	display: flex;
+	@include center-flex;
 	flex-direction: column;
-	align-items: center;
 	margin: 0 auto;
 	position: relative;
-	justify-content: center;
 }
 
 .card__wrapper {
@@ -68,9 +67,7 @@ body {
 	&--number {
 		font-size: 2.5rem;
 		grid-area: 2 / 1 / 3 / 5;
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		@include center-flex;
 		height: fit-content;
 		align-self: center;
 		margin: 0 2rem;
@@ -181,7 +178,7 @@ form.card__form {
 }
 
 @media (max-width: 768px) {
-	body{
+	body {
 		margin: 2rem;
 	}
 	.card__preview--number--block {
@@ -210,7 +207,6 @@ form.card__form {
 	.card__preview {
 		&--number {
 			font-size: 2rem;
-			margin-top: 3rem;
 			&--block {
 				margin: 0;
 			}
@@ -219,13 +215,13 @@ form.card__form {
 				gap: 0.3rem;
 			}
 		}
-
 		&--holder,
 		&--expires {
+			padding: 0;
 			label {
 				font-size: 1rem;
 			}
-			&--box{
+			&--box {
 				font-size: 1.1rem;
 			}
 			&--char {
@@ -233,7 +229,6 @@ form.card__form {
 			}
 		}
 	}
-
 	form.card__form {
 		width: 90%;
 		padding: 2.5rem 1.5rem 1.5rem;
@@ -275,10 +270,10 @@ form.card__form {
 
 		&--holder,
 		&--expires {
-			label{
+			label {
 				font-size: 0.8rem;
 			}
-			&--box{
+			&--box {
 				font-size: 0.9rem;
 			}
 			&--char {

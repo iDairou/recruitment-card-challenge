@@ -9,15 +9,16 @@ block content
           +addPicture('chip.png', 'card__preview--chip-img')
         .card__preview--logo
           +addPicture('visa.png', 'card__preview--visa-img')
-        .card__preview--number.card__section
+        .moving-border  
+        .card__preview--number
           each blockNum in [1, 2, 3, 4]
             .card__preview--number--block
               each digit in [1, 2, 3, 4]
                 span.card__digit #
-        .card__preview--holder.card__section
+        .card__preview--holder
           label Card Holder
           .card__preview--holder--char AD SOYAD
-        .card__preview--expires.card__section
+        .card__preview--expires
           label Expires
           .card__preview--expires--box
             span.card__previev--expires--box--month MM

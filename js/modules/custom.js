@@ -16,13 +16,58 @@ export default function () {
 			year: document.querySelector(".card__previev--expires--box--year"),
 			cvv: document.querySelector(".card__preview--cvv-box"),
 			logos: document.querySelectorAll(".card__preview--logo img"),
-			sections: {
-				number: document.querySelector(".card__preview--number"),
-				holder: document.querySelector(".card__preview--holder"),
-				expiry: document.querySelector(".card__preview--expires"),
+		},
+		border: document.querySelector(".moving-border"),
+	};
+
+	const toggleBorderClass = (element, className, isAdding) => {
+		isAdding
+			? element?.classList.add(className)
+			: element?.classList.remove(className);
+	};
+	const setStyles = (border, styles) => {
+		Object.entries(styles).forEach(([property, value]) => {
+			border.style[property] = value;
+		});
+	};
+	const { number, holder, month, year } = elements.form;
+	const initBorder = {
+		width: "100%",
+		height: "100%",
+		left: "50%",
+		top: "50%",
+	};
+
+	const borderConfigs = [
+		{
+			input: number,
+			styles: {
+				width: " 92%",
+				left: "50%",
+				top: "50%",
+				height: "15%",
 			},
 		},
-	};
+
+		{
+			input: holder,
+			styles: {
+				width: "66%",
+				height: "16%",
+				top: "81.5%",
+				left: "36%",
+			},
+		},
+		{
+			input: [month, year],
+			styles: {
+				width: "16%",
+				height: "16%",
+				top: "81%",
+				left: "89%",
+			},
+		},
+	];
 
 	const logoPatterns = {
 		visa: /^4/,
@@ -45,9 +90,7 @@ export default function () {
 	const handleLogoChange = (number) => {
 		const { logos } = elements.card;
 		if (!logos) return;
-
 		const cardLogo = identifyLogoImage(number);
-
 		if (cardLogo !== currentCardType) {
 			currentCardType = cardLogo;
 
@@ -60,19 +103,6 @@ export default function () {
 			});
 		}
 	};
-
-	const clearFocus = () => {
-		Object.values(elements.card.sections).forEach((section) => {
-			if (section) section.classList.remove("card__section--focus");
-		});
-	};
-
-	const focusSection = (sectionName) => {
-		clearFocus();
-		const section = elements.card.sections[sectionName];
-		if (section) section.classList.add("card__section--focus");
-	};
-
 	const updateCardNumber = (e) => {
 		const value = e.target.value.replace(/\D/g, "").slice(0, 16);
 		e.target.value = value;
@@ -182,17 +212,13 @@ export default function () {
 
 		// Obsługa numeru karty
 		number.addEventListener("input", updateCardNumber);
-		number.addEventListener("focus", () => focusSection("number"));
 
 		// Obsługa imienia i nazwiska
 		holder.addEventListener("input", updateCardName);
-		holder.addEventListener("focus", () => focusSection("holder"));
 
 		// Obsługa daty ważności
 		month.addEventListener("change", updateCardMonth);
-		month.addEventListener("focus", () => focusSection("expiry"));
 		year.addEventListener("change", updateCardYear);
-		year.addEventListener("focus", () => focusSection("expiry"));
 
 		// Obsługa kodu CVV
 		cvv.addEventListener("input", updateCardCVV);
@@ -201,17 +227,24 @@ export default function () {
 		});
 		cvv.addEventListener("blur", () => {
 			wrapper.classList.remove("flipped");
-			clearFocus();
 		});
 
-		const formInputs = [number, holder, month, year];
-		formInputs.forEach((input) => {
-			input.addEventListener("blur", () => {
-				setTimeout(() => {
-					if (!formInputs.includes(document.activeElement)) {
-						clearFocus();
-					}
-				}, 50);
+		borderConfigs.forEach(({ input, styles }) => {
+			const inputs = Array.isArray(input) ? input : [input];
+			const border = elements.border;
+
+			inputs.forEach((singleInput) => {
+				singleInput.addEventListener("focus", () => {
+					setStyles(border, styles);
+					toggleBorderClass(border, "active", true);
+				});
+
+				singleInput.addEventListener("blur", () => {
+					toggleBorderClass(border, "active", false);
+
+					//reset
+					setStyles(border, initBorder);
+				});
 			});
 		});
 	};
