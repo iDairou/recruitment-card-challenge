@@ -1,6 +1,6 @@
 @import 'mixins.scss';
 
-.fade-in {
+.fall-in {
     display: inline-block;
     opacity: 0;
     transform: translateY(-30px);
@@ -9,7 +9,7 @@
 @keyframes fallDown {
     from {
         opacity: 0;
-        transform: translateY(-3rem);
+        transform: translateY(-1.5rem);
     }
     to {
         opacity: 1;
@@ -17,7 +17,7 @@
     }
 }
 
-.rising-character {
+.rise-up {
     display: inline-block;
     opacity: 1;
     transform: translateY(0);
@@ -25,12 +25,8 @@
 }
 @keyframes riseUp {
     from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    50% {
         opacity: 0;
-        transform: translateY(3rem);
+        transform: translateY(1.5rem);
     }
     to {
         opacity: 1;
@@ -63,7 +59,7 @@
     @include center-absolute;
     height: 100%;
     width: 100%;
-    border: 2px solid #aaa7b3;
+    border: 1.5px solid #aaa7b3;
     border-radius: 0.6rem;
     opacity: 0;
     transition: all 0.2s ease-in-out;

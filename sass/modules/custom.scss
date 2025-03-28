@@ -70,7 +70,8 @@ body {
 		@include center-flex;
 		height: fit-content;
 		align-self: center;
-		margin: 0 2rem;
+		margin: 0 3.5rem 0 .3rem;
+
 		&--block {
 			text-align: center;
 			letter-spacing: 0.3rem;

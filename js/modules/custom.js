@@ -42,8 +42,8 @@ export default function () {
 		{
 			input: number,
 			styles: {
-				width: " 92%",
-				left: "50%",
+				width: " 89%",
+				left: "47%",
 				top: "50%",
 				height: "15%",
 			},
@@ -53,7 +53,7 @@ export default function () {
 			input: holder,
 			styles: {
 				width: "66%",
-				height: "16%",
+				height: "19%",
 				top: "81.5%",
 				left: "36%",
 			},
@@ -62,8 +62,8 @@ export default function () {
 			input: [month, year],
 			styles: {
 				width: "16%",
-				height: "16%",
-				top: "81%",
+				height: "19%",
+				top: "81.5%%",
 				left: "89%",
 			},
 		},
@@ -96,29 +96,43 @@ export default function () {
 
 			const imagesArr = Array.from(logos);
 			imagesArr.forEach((image) => {
-				image.classList.remove("fade-in");
+				image.classList.remove("rise-up");
 				image.src = `/images/${cardLogo}.png`;
 				void image.getBoundingClientRect();
-				image.classList.add("fade-in");
+				image.classList.add("rise-up");
 			});
 		}
 	};
+
+	const fomatInputValue = (value) => {
+		let formattedValue = "";
+		for (let i = 0; i < value.length; i++) {
+			if (i > 0 && i % 4 === 0) {
+				formattedValue += " ";
+			}
+			formattedValue += value[i];
+		}
+		return formattedValue;
+	};
+
 	const updateCardNumber = (e) => {
 		const value = e.target.value.replace(/\D/g, "").slice(0, 16);
-		e.target.value = value;
+
+		e.target.value = fomatInputValue(value);
 
 		handleLogoChange(value);
-
 		elements.card.digits.forEach((span, index) => {
-			const isRising = span.classList.contains("rising-character");
-			span.classList.remove(isRising ? "rising-character" : "fade-in");
+			const isRising = span.classList.contains("fall-in");
+			const isFalling = span.classList.contains("rise-up");
+
+			span.classList.remove(isRising ? "fall-in" : "rise-up");
 
 			if (index < value.length) {
 				span.textContent = value[index];
-				span.classList.add("fade-in");
-			} else if (span.textContent !== "#") {
+				span.classList.add("rise-up");
+			} else {
 				span.textContent = "#";
-				span.classList.add("rising-character");
+				span.classList.add(isFalling ? "fall-in" : null);
 			}
 		});
 	};
@@ -176,10 +190,10 @@ export default function () {
 			return;
 		}
 
-		month.classList.remove("fade-in");
+		month.classList.remove("rise-up");
 		setTimeout(() => {
 			month.textContent = selectedMonth.toString().padStart(2, "0");
-			month.classList.add("fade-in");
+			month.classList.add("rise-up");
 		}, 10);
 	};
 
@@ -192,10 +206,10 @@ export default function () {
 			return;
 		}
 
-		year.classList.remove("fade-in");
+		year.classList.remove("rise-up");
 		setTimeout(() => {
 			year.textContent = selectedYear;
-			year.classList.add("fade-in");
+			year.classList.add("rise-up");
 		}, 10);
 	};
 
