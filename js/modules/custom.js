@@ -19,17 +19,6 @@ export default function () {
 		},
 		border: document.querySelector(".moving-border"),
 	};
-
-	const toggleBorderClass = (element, className, isAdding) => {
-		isAdding
-			? element?.classList.add(className)
-			: element?.classList.remove(className);
-	};
-	const setStyles = (border, styles) => {
-		Object.entries(styles).forEach(([property, value]) => {
-			border.style[property] = value;
-		});
-	};
 	const { number, holder, month, year } = elements.form;
 	const initBorder = {
 		width: "100%",
@@ -63,11 +52,43 @@ export default function () {
 			styles: {
 				width: "16%",
 				height: "19%",
-				top: "81.5%%",
+				top: "81.5%",
 				left: "89%",
 			},
 		},
 	];
+
+	const toggleBorderClass = (element, className, isAdding) => {
+		isAdding
+			? element?.classList.add(className)
+			: element?.classList.remove(className);
+	};
+	const setStyles = (border, styles) => {
+		Object.entries(styles).forEach(([property, value]) => {
+			border.style[property] = value;
+		});
+	};
+
+	const initializeBorder = (configs) => {
+		configs.forEach(({ input, styles }) => {
+			const inputs = Array.isArray(input) ? input : [input];
+			const border = elements.border;
+
+			inputs.forEach((singleInput) => {
+				singleInput.addEventListener("focus", () => {
+					setStyles(border, styles);
+					toggleBorderClass(border, "active", true);
+				});
+
+				singleInput.addEventListener("blur", () => {
+					toggleBorderClass(border, "active", false);
+
+					//reset
+					setStyles(border, initBorder);
+				});
+			});
+		});
+	};
 
 	const logoPatterns = {
 		visa: /^4/,
@@ -242,26 +263,8 @@ export default function () {
 		cvv.addEventListener("blur", () => {
 			wrapper.classList.remove("flipped");
 		});
-
-		borderConfigs.forEach(({ input, styles }) => {
-			const inputs = Array.isArray(input) ? input : [input];
-			const border = elements.border;
-
-			inputs.forEach((singleInput) => {
-				singleInput.addEventListener("focus", () => {
-					setStyles(border, styles);
-					toggleBorderClass(border, "active", true);
-				});
-
-				singleInput.addEventListener("blur", () => {
-					toggleBorderClass(border, "active", false);
-
-					//reset
-					setStyles(border, initBorder);
-				});
-			});
-		});
 	};
 
 	initEventListeners();
+	initializeBorder(borderConfigs);
 }
